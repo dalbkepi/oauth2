@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: gateway
+
+application:
+  oauth2:
+    client-id: gateway
+    client-secret: secret
+    access-token-uri: http://auth-server/oauth/token
+
+zuul:
+  sensitive-headers:
+    - Cookie
+    - Set-Cookie
+    - WWW-Authenticate
+  routes:
+    account:
+      path: /account-service/**
+      serviceId: account-service
+    bank:
+      path: /bank-info-service/**
+      serviceId: bank-info-service
+
+app:
+  oauth2:
+    client-id: gateway
+    client-secret: secret
+    access-token-uri: http://auth-server/oauth/token
+
+server:
+  port: 8000
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

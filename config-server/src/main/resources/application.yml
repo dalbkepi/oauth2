@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: config-server
+#    starting native to allow local config store
+  profiles:
+    active: native
+
+security:
+  oauth2:
+    resource:
+      id: config-server
+      token-info-uri: http://localhost:8001/oauth/check_token
+    client:
+      client-id: config-server
+      client-secret: secret
+      access-token-uri: http://localhost:8001/oauth/token
+      user-authorization-uri: http://localhost:8001/oauth/authorize
+
+server:
+  port: 8888
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

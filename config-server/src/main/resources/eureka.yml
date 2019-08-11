@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: eureka
+  boot:
+    admin:
+      client:
+        url: http://localhost:8080
+server:
+  port: 8761
+
+eureka:
+  client:
+#    necessary for monitoring over discovery
+    register-with-eureka: true
+    fetch-registry: false
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

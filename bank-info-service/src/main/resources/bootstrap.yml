@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: bank-info-service
+  cloud:
+    config:
+      uri: http://localhost:8888
+server:
+  port: 0
+
+
+security:
+  oauth2:
+    # Configuration of access to authorization server.
+    # Normally, this will be configured externally.
+    resource:
+      id: bank-info-service
+      token-info-uri: http://localhost:8001/oauth/check_token
+    client:
+      client-id: bank-info-service
+      client-secret: secret
+      access-token-uri: http://localhost:8001/oauth/token
+      user-authorization-uri: http://localhost:8001/oauth/authorize
+      scope: accountdetails
+
+account-service:
+  account-url: http://account-service/account

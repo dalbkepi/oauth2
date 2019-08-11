@@ -1,0 +1,111 @@
+<html lang="de">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playground</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+
+<div class="container-fluid mb-3">
+    <h1>Playground</h1>
+</div>
+<div class="container-fluid row">
+    <div class="col-md-3">
+        <h3>Login</h3>
+        <form action="/login" method="post">
+            <input class="form-control" type="text" name="username" id="username" value="admin">
+            <input class="form-control mb-3" type="text" name="password" id="password" value="admin">
+        </form>
+        <button class="btn btn-primary" onclick="authenticate()">Send formbased login</button>
+    </div>
+    <div class="col-md-5">
+        <h1>Requests</h1>
+
+        <h3>Unauthorized Request - Get Accounts</h3>
+        <button class="btn btn-primary mb-3" onclick="request('get', 'account-service/accounts')">Get Accounts</button>
+
+        <h3>Secured Request - Get Account</h3>
+        <button class="btn btn-primary mb-3" onclick="request('get', 'account-service/account/1')">Get Account #1</button>
+
+        <h3>Secured Request - Create Account #4</h3>
+        <button class="btn btn-primary mb-3" onclick="requestPost('account-service/account/4', '{&quot;firstName&quot;:&quot;myFirstName&quot;,&quot;lastName&quot;:&quot;myLastName&quot;}')">Create Account #4</button>
+
+        <h3>Secured Request - Get Bank Info for AccountId #1</h3>
+        <button class="btn btn-primary mb-3" onclick="request('get', 'bank-info-service/bank/1')">Get BankInfo for accountID #1</button>
+
+    </div>
+    <div class="col-md-4">
+        <h1>Response</h1>
+        <div id="response" class="bg-light border">
+        </div>
+    </div>
+</div>
+
+<script>
+    function authenticate() {
+        let username = document.getElementById('username').value;
+        let password = document.getElementById('password').value;
+        let body = `username=${username}&password=${password}`;
+
+        fetch('http://localhost:8000/login', {
+            method: 'post',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: body
+        }).then(function (response) {
+            let responseWrapper = document.getElementById('response');
+            if (response.status === 200) {
+                responseWrapper.innerHTML = '<p>Success</p>';
+            } else {
+                responseWrapper.innerHTML = '<p>Error while login</p>';
+            }
+        });
+    }
+
+    function request(method, path) {
+        fetch(`http://localhost:8000/${path}`, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function (response) {
+            let responseWrapper = document.getElementById('response');
+            if (response.status === 200) {
+                response.json().then(content => {
+                    responseWrapper.innerHTML = `<pre>${JSON.stringify(content, undefined, 2)}</pre>`;
+            });
+            } else {
+                responseWrapper.innerHTML = `<p>Cant access resource. Error: ${response.status}</p>`;
+            }
+        });
+    }
+
+    function requestPost(path, body) {
+        body = body || {}
+        fetch(`http://localhost:8000/${path}`, {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: body
+        }).then(function (response) {
+            let responseWrapper = document.getElementById('response');
+            if (response.status === 200) {
+                response.json().then(content => {
+                    responseWrapper.innerHTML = `<pre>${JSON.stringify(content, undefined, 2)}</pre>`;
+            });
+            } else {
+                responseWrapper.innerHTML = `<p>Cant access resource. Error: ${response.status}</p>`;
+            }
+        });
+    }
+</script>
+</body>
+
+</html>
